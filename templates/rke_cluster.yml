@@ -12,7 +12,7 @@ nodes:
   - address: "{{ hostvars[host]['ansible_' + cluster_interface].ipv4.address }}"
     user: {{ rke_ssh_user }}
     role:
-{{ hostvars[host].rke_node_roles | to_nice_yaml(indent=2) | indent(width=6, first=True, blank=True) }}
+      {{ hostvars[host].rke_node_roles | to_nice_yaml(indent=2) | indent(width=6) }}
 {% endfor %}
 
 ingress:
