@@ -1,0 +1,27 @@
+---
+
+rke_release: v0.2.2
+rke_binary_url: "https://github.com/rancher/rke/releases/download/{{ rke_release }}/rke_linux-amd64"
+rke_binary_checksum: sha256:6b6c60aab8ee3135fec6af4d82a24814664b9ee5f9b283864dfbe5a5855ca15f
+# Map from Kubernetes minor version to supported Rancher Kubernetes version for specified RKE release
+rke_kubernetes_versions:
+  "1.14": v1.14.1-rancher1-1
+  "1.13": v1.13.5-rancher1-2
+  "1.12": v1.12.7-rancher1-2
+  "1.11": v1.11.9-rancher1-1
+# Default Kubernetes version for specified RKE release
+kubernetes_version: "1.13"
+
+rke_config_dir: "{{ ansible_env.HOME | default(ansible_env.PWD) | default('/root') }}/rke"
+
+# Networking configuration
+cluster_interface: "{{ ansible_default_ipv4.interface }}"
+cluster_cidr: "{{ [ansible_facts[cluster_interface].ipv4.network, ansible_facts[cluster_interface].ipv4.netmask] | join('/') | ipaddr('net') }}"
+
+rke_ssh_user: centos
+rke_node_roles: []
+
+openstack_auth_url: "{{ lookup('env', 'OS_AUTH_URL') }}"
+
+rke_ingress_config:
+  provider: nginx

@@ -1,0 +1,76 @@
+---
+
+# These tasks must be run on all Kubernetes nodes
+
+- name: Install Docker
+  yum:
+    name: docker
+    state: present
+
+- name: Allow dockerroot group to access Docker daemon
+  copy:
+    content: '{ "group": "dockerroot" }'
+    dest: /etc/docker/daemon.json
+
+- name: Ensure Docker is started
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Add RKE SSH user to dockerroot group
+  user:
+    name: "{{ rke_ssh_user }}"
+    groups: [dockerroot]
+    append: yes
+
+- name: Ensure firewalld is started
+  service:
+    name: firewalld
+    state: started
+    enabled: yes
+
+# The trusted zone allows all traffic
+- name: Allow all traffic from cluster CIDR
+  firewalld:
+    zone: trusted
+    source: "{{ cluster_cidr }}"
+    state: enabled
+    immediate: yes
+    permanent: yes
+
+- name: Allow external access to API server
+  firewalld:
+    port: 6443/tcp
+    permanent: true
+    immediate: true
+    state: enabled
+  when: "'controlplane' in rke_node_roles"
+
+- name: Create sysctl settings file for bridge settings
+  copy:
+    dest: /etc/sysctl.d/k8s.conf
+    content: |
+      net.bridge.bridge-nf-call-ip6tables = 1
+      net.bridge.bridge-nf-call-iptables = 1
+  register: sysctl_k8s_conf
+
+- name: Load new sysctl settings
+  command: sysctl --system
+  when: sysctl_k8s_conf is changed
+
+- name: Ensure SELinux is disabled
+  selinux:
+    state: disabled
+
+- name: Remove swap volumes from /etc/fstab
+  lineinfile:
+    path: /etc/fstab
+    state: absent
+    # This should match all lines with an fstype of "swap"
+    regexp: '^[^\s]+\s+[^\s]+\s+swap\s+'
+  register: remove_swap_volumes
+
+- name: Disable swap
+  command: swapoff --all
+  when: remove_swap_volumes is changed

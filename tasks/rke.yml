@@ -1,0 +1,34 @@
+---
+
+# Install, configure and run Rancher Kubernetes Engine (RKE) on the target hosts to configure a Kubernetes cluster
+
+- name: Include cloud provider variables
+  include_vars: "{{ rke_cloud_provider }}.yml"
+  when: rke_cloud_provider is defined
+
+- name: Download RKE binary
+  get_url:
+    url: "{{ rke_binary_url }}"
+    checksum: "{{ rke_binary_checksum }}"
+    dest: /usr/local/bin/rke
+    mode: "+rx"
+  register: rke_binary
+
+- name: Ensure config directory exists
+  file:
+    path: "{{ rke_config_dir }}"
+    state: directory
+
+- name: Create/update RKE config file
+  template:
+    src: rke_cluster.yml
+    dest: "{{ rke_config_dir }}/cluster.yml"
+  register: rke_configuration
+
+- name: Create/update Kubernetes cluster
+  shell: |
+    set -eo pipefail
+    rke up | tee /var/log/rke-up.log
+  args:
+    chdir: "{{ rke_config_dir }}"
+  when: rke_configuration is changed or rke_binary is changed

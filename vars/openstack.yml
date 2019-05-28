@@ -1,0 +1,22 @@
+rke_cloud_provider_config:
+  name: openstack
+  openstackCloudProvider:
+    global:
+      auth-url: "{{ openstack_auth_url }}"
+      user-id: "{{ openstack_trustee_id }}"
+      password: "{{ openstack_trustee_password }}"
+      trust-id: "{{ openstack_trust_id }}"
+    block_storage:
+      bs-version: v2
+      trust-device-path: true
+
+# Use the addons to install the default storage class
+rke_cloud_provider_addons: |-
+  ---
+  apiVersion: storage.k8s.io/v1
+  kind: StorageClass
+  metadata:
+    name: standard
+    annotations:
+      "storageclass.kubernetes.io/is-default-class": "true"
+  provisioner: kubernetes.io/cinder

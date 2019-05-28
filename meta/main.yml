@@ -1,0 +1,11 @@
+---
+
+galaxy_info:
+  role_name: jasmin.rke
+  author: Matt Pryor
+  company: Centre for Environmental Data Analysis (CEDA)
+  desecription: Configure a Kubernetes cluster using RKE.
+  min_ansible_version: 2.7
+  galaxy_tags: [kubernetes, rke]
+
+dependencies: []
