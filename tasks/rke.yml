@@ -12,7 +12,6 @@
     checksum: "{{ rke_binary_checksum }}"
     dest: /usr/local/bin/rke
     mode: "+rx"
-  register: rke_binary
 
 - name: Ensure config directory exists
   file:
@@ -23,7 +22,6 @@
   template:
     src: rke_cluster.yml
     dest: "{{ rke_config_dir }}/cluster.yml"
-  register: rke_configuration
 
 - name: Create/update Kubernetes cluster
   shell: |
@@ -31,4 +29,9 @@
     rke up | tee /var/log/rke-up.log
   args:
     chdir: "{{ rke_config_dir }}"
-  when: rke_configuration is changed or rke_binary is changed
+
+- name: Install kubectl
+  get_url:
+    url: https://storage.googleapis.com/kubernetes-release/release/{{ rke_kubernetes_versions[kubernetes_version].split('-', 1)[0] }}/bin/linux/amd64/kubectl
+    dest: /usr/local/bin/kubectl
+    mode: "+rx"

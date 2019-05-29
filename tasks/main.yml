@@ -5,4 +5,4 @@
 
 - name: Run RKE installer
   include_tasks: rke.yml
-  run_once: true
+  when: inventory_hostname == rke_controller_hostname

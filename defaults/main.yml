@@ -14,6 +14,10 @@ kubernetes_version: "1.13"
 
 rke_config_dir: "{{ ansible_env.HOME | default(ansible_env.PWD) | default('/root') }}/rke"
 
+# This is the host that will run 'rke up'
+# By default, use the first host in the play
+rke_controller_hostname: "{{ ansible_play_hosts[0] }}"
+
 # Networking configuration
 cluster_interface: "{{ ansible_default_ipv4.interface }}"
 cluster_cidr: "{{ [ansible_facts[cluster_interface].ipv4.network, ansible_facts[cluster_interface].ipv4.netmask] | join('/') | ipaddr('net') }}"
