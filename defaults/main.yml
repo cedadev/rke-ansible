@@ -13,6 +13,7 @@ rke_kubernetes_versions:
 kubernetes_version: "1.13"
 
 rke_config_dir: "{{ ansible_env.HOME | default(ansible_env.PWD) | default('/root') }}/rke"
+rke_force_configure: false
 
 # This is the host that will run 'rke up'
 # By default, use the first host in the play
