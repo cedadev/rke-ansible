@@ -6,17 +6,19 @@
   yum:
     name: docker
     state: present
+  register: docker_install
+
+- name: Restart Docker
+  service:
+    name: docker
+    state: restarted
+    enabled: yes
+  when: docker_install is changed
 
 - name: Allow dockerroot group to access Docker daemon
   copy:
     content: '{ "group": "dockerroot" }'
     dest: /etc/docker/daemon.json
-
-- name: Ensure Docker is started
-  service:
-    name: docker
-    state: started
-    enabled: yes
 
 - name: Add RKE SSH user to dockerroot group
   user:
