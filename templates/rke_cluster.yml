@@ -23,9 +23,10 @@ cloud_provider:
   {{ rke_cloud_provider_config | to_nice_yaml(indent=2) | indent(width=2) }}
 {% endif %}
 
-{% if rke_cloud_provider_addons is defined %}
+{% if rke_cloud_provider_addons is defined or rke_extra_addons is defined %}
 addons: |-
   {{ rke_cloud_provider_addons | default('') | indent(width=2) }}
+  {{ rke_extra_addons | default('') | indent(width=2) }}
 {% endif %}
 
 {% if rke_extra_config is defined %}

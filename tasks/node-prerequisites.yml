@@ -8,17 +8,18 @@
     state: present
   register: docker_install
 
+- name: Allow dockerroot group to access Docker daemon
+  copy:
+    content: '{ "group": "dockerroot" }'
+    dest: /etc/docker/daemon.json
+  register: docker_daemon_config
+
 - name: Restart Docker
   service:
     name: docker
     state: restarted
     enabled: yes
-  when: docker_install is changed
-
-- name: Allow dockerroot group to access Docker daemon
-  copy:
-    content: '{ "group": "dockerroot" }'
-    dest: /etc/docker/daemon.json
+  when: docker_install is changed or docker_daemon_config is changed
 
 - name: Add RKE SSH user to dockerroot group
   user:
