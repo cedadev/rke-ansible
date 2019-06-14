@@ -4,15 +4,14 @@ cluster_name: "{{ cluster_name }}"
 
 kubernetes_version: "{{ rke_kubernetes_versions[kubernetes_version] }}"
 
-# Use SSH agent auth to rely on agent forwarding
-ssh_agent_auth: true
-
 nodes:
 {% for host in ansible_play_hosts %}
   - address: "{{ hostvars[host]['ansible_' + cluster_interface].ipv4.address }}"
     user: {{ rke_ssh_user }}
     role:
       {{ hostvars[host].rke_node_roles | to_nice_yaml(indent=2) | indent(width=6) }}
+    ssh_key: |-
+      {{ rke_ssh_private_key | indent(width=6) }}
 {% endfor %}
 
 ingress:
