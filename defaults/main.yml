@@ -1,14 +1,14 @@
 ---
 
-rke_release: v0.2.2
+rke_release: v0.2.4
 rke_binary_url: "https://github.com/rancher/rke/releases/download/{{ rke_release }}/rke_linux-amd64"
-rke_binary_checksum: sha256:6b6c60aab8ee3135fec6af4d82a24814664b9ee5f9b283864dfbe5a5855ca15f
+rke_binary_checksum: sha256:d6d78f324fa5d86b42307e81b76c82881a7bc18fa29362af7026d541b948d56d
 # Map from Kubernetes minor version to supported Rancher Kubernetes version for specified RKE release
 rke_kubernetes_versions:
-  "1.14": v1.14.1-rancher1-1
-  "1.13": v1.13.5-rancher1-2
-  "1.12": v1.12.7-rancher1-2
-  "1.11": v1.11.9-rancher1-1
+  "1.14": v1.14.1-rancher1-2
+  "1.13": v1.13.5-rancher1-3
+  "1.12": v1.12.7-rancher1-3
+  "1.11": v1.11.9-rancher1-2
 # Default Kubernetes version for specified RKE release
 kubernetes_version: "1.13"
 
