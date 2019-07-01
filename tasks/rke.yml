@@ -23,6 +23,7 @@
   template:
     src: rke_cluster.yml
     dest: "{{ rke_config_dir }}/cluster.yml"
+    mode: u=rw,g=r,o=
   register: rke_cluster_config
 
 - name: Run RKE installer
