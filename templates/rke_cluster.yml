@@ -2,7 +2,7 @@
 
 cluster_name: "{{ cluster_name }}"
 
-kubernetes_version: "{{ rke_kubernetes_versions[kubernetes_version] }}"
+kubernetes_version: "{{ rke_kubernetes_version }}"
 
 nodes:
 {% for host in ansible_play_hosts %}
