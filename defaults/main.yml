@@ -46,5 +46,8 @@ rke_node_roles: []
 
 openstack_auth_url: "{{ lookup('env', 'OS_AUTH_URL') }}"
 
+rke_network_config:
+  plugin: weave
+
 rke_ingress_config:
   provider: nginx
