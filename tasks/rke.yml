@@ -6,6 +6,10 @@
   include_vars: "{{ rke_cloud_provider }}.yml"
   when: rke_cloud_provider is defined
 
+- name: Run cloud provider pre-install tasks
+  include: "{{ rke_cloud_provider_pre_install_tasks }}"
+  when: rke_cloud_provider_pre_install_tasks is defined
+
 - name: Download RKE binary
   get_url:
     url: "{{ rke_binary_url }}"
@@ -50,3 +54,7 @@
     remote_src: yes
     src: "{{ rke_config_dir }}/kube_config_cluster.yml"
     dest: "{{ ansible_env.HOME }}/.kube/config"
+
+- name: Run cloud provider post-install tasks
+  include: "{{ rke_cloud_provider_post_install_tasks }}"
+  when: rke_cloud_provider_post_install_tasks is defined

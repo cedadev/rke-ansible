@@ -6,7 +6,8 @@ kubernetes_version: "{{ rke_kubernetes_version }}"
 
 nodes:
 {% for host in ansible_play_hosts %}
-  - address: "{{ hostvars[host]['ansible_' + cluster_interface].ipv4.address }}"
+  - hostname_override: "{{ hostvars[host].ansible_hostname }}"
+    address: "{{ hostvars[host]['ansible_' + cluster_interface].ipv4.address }}"
     user: {{ rke_ssh_user }}
     role:
       {{ hostvars[host].rke_node_roles | to_nice_yaml(indent=2) | indent(width=6) }}
@@ -31,6 +32,12 @@ addons: |-
   {{ rke_extra_addons | default('') | indent(width=2) }}
 {% endif %}
 
-{% if rke_extra_config is defined %}
-{{ rke_extra_config | to_nice_yaml(indent=2) }}
+{% set addons_include = (rke_cloud_provider_addons_include | default([], true)) + (rke_extra_addons_include | default([], true)) %}
+{% if addons_include %}
+addons_include:
+  {{ addons_include | to_nice_yaml(indent=2) | indent(width=2) }}
+{% endif %}
+
+{% if rke_cloud_provider_extra_config is defined or rke_extra_config is defined %}
+{{ rke_cloud_provider_extra_config | default({}, true) | combine(rke_extra_config | default({}, true), recursive=True) | to_nice_yaml(indent=2) }}
 {% endif %}

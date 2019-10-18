@@ -5,8 +5,28 @@
 - name: Install Docker
   yum:
     name: docker
-    state: present
+    state: latest
   register: docker_install
+
+- name: Make docker.service.d directory
+  file:
+    path: /usr/lib/systemd/system/docker.service.d
+    state: directory
+
+# This is important for mount propagation
+- name: Set Docker mount flags
+  copy:
+    dest: /usr/lib/systemd/system/docker.service.d/mount_flags.conf
+    content: |
+      [Service]
+      MountFlags=shared
+  register: mount_flags_updated
+
+- name: Reload systemd daemon
+  systemd:
+    daemon_reload: yes
+  when: mount_flags_updated is changed
+  register: system_daemon_reload
 
 - name: Allow dockerroot group to access Docker daemon
   copy:
@@ -19,7 +39,10 @@
     name: docker
     state: restarted
     enabled: yes
-  when: docker_install is changed or docker_daemon_config is changed
+  when: >
+    docker_install is changed or
+    system_daemon_reload is changed or
+    docker_daemon_config is changed
 
 - name: Add RKE SSH user to dockerroot group
   user:

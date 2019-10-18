@@ -1,22 +1,22 @@
 ---
 
 rke_binary_checksums:
-  v0.3.0: sha256:5cbcee455889d16ec95f7facffd6000e12306b4e946f6ba4a1e074d45fa6b3ba
+  v0.3.1: sha256:2b6ef36699a09d775abef1491530fe4340ea4800b5730d4f69f83d3cf1a977f1
 
 # Map of Kubernetes minor version to RKE release and RKE Kubernetes version
 kubernetes_supported_versions:
   "1.16":
-    rke_release: v0.3.0
-    rke_kubernetes_version: v1.16.1-rancher1-1
+    rke_release: v0.3.1
+    rke_kubernetes_version: v1.16.2-rancher1-1
   "1.15":
-    rke_release: v0.3.0
-    rke_kubernetes_version: v1.15.4-rancher1-2
+    rke_release: v0.3.1
+    rke_kubernetes_version: v1.15.5-rancher1-2
   "1.14":
-    rke_release: v0.3.0
-    rke_kubernetes_version: v1.14.7-rancher1-1
+    rke_release: v0.3.1
+    rke_kubernetes_version: v1.14.8-rancher1-1
   "1.13":
-    rke_release: v0.3.0
-    rke_kubernetes_version: v1.13.11-rancher1-1
+    rke_release: v0.3.1
+    rke_kubernetes_version: v1.13.12-rancher1-1
 
 # Default Kubernetes minor version
 kubernetes_version: "1.15"
@@ -43,7 +43,11 @@ rke_node_roles: []
 openstack_auth_url: "{{ lookup('env', 'OS_AUTH_URL') }}"
 
 rke_network_config:
-  plugin: weave
+  plugin: canal
+  options:
+    canal_iface: "{{ cluster_interface }}"
 
 rke_ingress_config:
   provider: nginx
+
+manifests_dir: "{{ ansible_env.HOME | default(ansible_env.PWD) | default('/root') }}/manifests"
