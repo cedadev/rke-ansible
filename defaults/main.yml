@@ -1,30 +1,18 @@
 ---
 
-rke_binary_checksums:
-  v0.3.1: sha256:2b6ef36699a09d775abef1491530fe4340ea4800b5730d4f69f83d3cf1a977f1
-
-# Map of Kubernetes minor version to RKE release and RKE Kubernetes version
+# Map of Kubernetes minor version to RKE Kubernetes version
 kubernetes_supported_versions:
-  "1.16":
-    rke_release: v0.3.1
-    rke_kubernetes_version: v1.16.2-rancher1-1
-  "1.15":
-    rke_release: v0.3.1
-    rke_kubernetes_version: v1.15.5-rancher1-2
-  "1.14":
-    rke_release: v0.3.1
-    rke_kubernetes_version: v1.14.8-rancher1-1
-  "1.13":
-    rke_release: v0.3.1
-    rke_kubernetes_version: v1.13.12-rancher1-1
+  "1.17": v1.17.0-rancher1-2
+  "1.16": v1.16.4-rancher1-1
+  "1.15": v1.15.7-rancher1-1
 
 # Default Kubernetes minor version
-kubernetes_version: "1.15"
+kubernetes_version: "1.17"
 
-rke_release: "{{ kubernetes_supported_versions[kubernetes_version].rke_release }}"
+rke_release: v1.0.2
 rke_binary_url: "https://github.com/rancher/rke/releases/download/{{ rke_release }}/rke_linux-amd64"
-rke_binary_checksum: "{{ rke_binary_checksums[rke_release] }}"
-rke_kubernetes_version: "{{ kubernetes_supported_versions[kubernetes_version].rke_kubernetes_version }}"
+rke_binary_checksum: sha256:8c481ff4c188f8dfe53b82ef080bdb6ae89458ed60c918d4ca24f70cc54dc86f
+rke_kubernetes_version: "{{ kubernetes_supported_versions[kubernetes_version] }}"
 
 rke_config_dir: "{{ ansible_env.HOME | default(ansible_env.PWD) | default('/root') }}/rke"
 rke_force_configure: false
