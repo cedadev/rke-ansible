@@ -7,7 +7,7 @@ kubernetes_supported_versions:
   "1.17": v1.17.14-rancher1-1
 
 # Default Kubernetes minor version
-kubernetes_version: "1.17"
+kubernetes_version: "1.19"
 
 rke_release: v1.2.3
 rke_binary_url: "https://github.com/rancher/rke/releases/download/{{ rke_release }}/rke_linux-amd64"
