@@ -42,6 +42,7 @@
   get_url:
     url: https://storage.googleapis.com/kubernetes-release/release/{{ rke_kubernetes_version.split('-', 1)[0] }}/bin/linux/amd64/kubectl
     dest: /usr/local/bin/kubectl
+    force: yes
     mode: "+rx"
 
 - name: Ensure $HOME/.kube exists
