@@ -2,16 +2,17 @@
 
 # Map of Kubernetes minor version to RKE Kubernetes version
 kubernetes_supported_versions:
-  "1.19": v1.19.6-rancher1-1
-  "1.18": v1.18.14-rancher1-1
-  "1.17": v1.17.16-rancher1-1
+  "1.20": v1.20.5-rancher1-1
+  "1.19": v1.19.9-rancher1-1
+  "1.18": v1.18.17-rancher1-1
+  "1.17": v1.17.17-rancher1-1
 
 # Default Kubernetes minor version
-kubernetes_version: "1.19"
+kubernetes_version: "1.20"
 
-rke_release: v1.2.4
+rke_release: v1.2.7
 rke_binary_url: "https://github.com/rancher/rke/releases/download/{{ rke_release }}/rke_linux-amd64"
-rke_binary_checksum: sha256:3981fef5251cfb68fccca4fbbd265cafd3db5bbcbc1089e526c68bd4363ce048
+rke_binary_checksum: sha256:e84b54da40e7e53cfd5cb3933c6aab9f027e14c39c1a0d29f90479bf3f8feeff
 rke_kubernetes_version: "{{ kubernetes_supported_versions[kubernetes_version] }}"
 
 rke_config_dir: "{{ ansible_env.HOME | default(ansible_env.PWD) | default('/root') }}/rke"
