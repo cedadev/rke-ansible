@@ -1,5 +1,5 @@
 rke_cloud_provider_config:
-  name: openstack
+  name: external
   openstackCloudProvider:
     global:
       auth-url: "{{ openstack_auth_url }}"
