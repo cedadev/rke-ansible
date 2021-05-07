@@ -30,6 +30,13 @@
     mode: u=rw,g=r,o=
   register: rke_cluster_config
 
+- name: Create/update cloud provider config
+  template:
+    src: openstack_cloud_provider.conf
+    dest: "{{ rke_config_dir }}/cloud.conf"
+    mode: u=rw,g=r,o=
+  register: provider_config
+
 - name: Run RKE installer
   shell: |
     set -eo pipefail
@@ -55,6 +62,27 @@
     remote_src: yes
     src: "{{ rke_config_dir }}/kube_config_cluster.yml"
     dest: "{{ ansible_env.HOME }}/.kube/config"
+
+- name: Create cloud provider secret
+  shell: |
+    kubectl create secret -n kube-system generic cloud-config --from-file="{{ rke_config_dir }}/cloud.conf"
+  when: rke_binary is changed or rke_cluster_config is changed or rke_force_configure
+
+- name: Create RBAC resources and openstack-cloud-controller-manager deamonset
+  shell: |
+    kubectl apply -f https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/master/cluster/addons/rbac/cloud-controller-manager-roles.yaml
+    kubectl apply -f https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/master/cluster/addons/rbac/cloud-controller-manager-role-bindings.yaml
+    kubectl apply -f https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/master/manifests/controller-manager/openstack-cloud-controller-manager-ds.yaml
+  when: rke_binary is changed or rke_cluster_config is changed or rke_force_configure
+
+#- name: Remove master node taint
+#  shell: |
+#    kubectl taint nodes {{ cluster_name }}-master-0 node.cloudprovider.kubernetes.io/uninitialized-
+
+- name: Remove worker node taint
+  shell: |
+    kubectl taint nodes {{ cluster_name }}-worker-{{ item }}  node.cloudprovider.kubernetes.io/uninitialized-
+  loop: "{{ range(0, cluster_num_workers , 1)|list }}" 
 
 - name: Run cloud provider post-install tasks
   include: "{{ rke_cloud_provider_post_install_tasks }}"
