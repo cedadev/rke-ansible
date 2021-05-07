@@ -75,9 +75,9 @@
     kubectl apply -f https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/master/manifests/controller-manager/openstack-cloud-controller-manager-ds.yaml
   when: rke_binary is changed or rke_cluster_config is changed or rke_force_configure
 
-#- name: Remove master node taint
-#  shell: |
-#    kubectl taint nodes {{ cluster_name }}-master-0 node.cloudprovider.kubernetes.io/uninitialized-
+- name: Remove master node taint
+  shell: |
+    kubectl taint nodes {{ cluster_name }}-master-0 node.cloudprovider.kubernetes.io/uninitialized-
 
 - name: Remove worker node taint
   shell: |
